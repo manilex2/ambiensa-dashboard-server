@@ -1,38 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserDto } from '../users/dto/user/userDTO';
-import { InjectModel } from '@nestjs/sequelize';
-import {
-  AfiliadoTitular,
-  Beneficiario,
-  Broker,
-  MedikenUser,
-} from 'src/users/models';
+import { AmbiensaUser } from 'src/users/models';
 import * as bcrypt from 'bcrypt';
-import { google } from 'googleapis';
-import { MailerService } from '@nestjs-modules/mailer';
-import { ConfigService } from '@nestjs/config';
-import { Options } from 'nodemailer/lib/smtp-transport';
-import { Op } from 'sequelize';
-
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
-    @InjectModel(MedikenUser)
-    private readonly medikenUser: typeof MedikenUser,
-    @InjectModel(Beneficiario)
-    private readonly beneficiario: typeof Beneficiario,
-    @InjectModel(Broker)
-    private readonly broker: typeof Broker,
-    @InjectModel(AfiliadoTitular)
-    private readonly afiliadoTitular: typeof AfiliadoTitular,
-    private mailerService: MailerService,
-    private configService: ConfigService,
+    private jwtService: JwtService
   ) {}
 
   async login(
-    user: Promise<MedikenUser | Beneficiario | Broker | AfiliadoTitular>,
+    user: AmbiensaUser,
   ): Promise<object> {
     return {
       token: this.jwtService.sign({
@@ -45,150 +23,29 @@ export class AuthService {
 
   async getUser(
     data: UserDto,
-  ): Promise<MedikenUser | Broker | Beneficiario | AfiliadoTitular> {
-    let user: MedikenUser | Broker | Beneficiario | AfiliadoTitular;
+  ): Promise<AmbiensaUser> {
+    let user: AmbiensaUser;
     try {
-      user = await this.medikenUser.findOne({
-        where: {
-          usuario: data.usuario,
-        },
-        attributes: {
-          exclude: ['Dsusuimg'],
-        },
-      });
+      user = {
+        clave: "Hola-123",
+        email: "prueba@ambiensa.com",
+        nombres: "Prueba Ambiensa",
+        usuario: "ambiensa"
+      };
       if (user) {
         const passwordMatch = await this.comparePasswords(
           data.clave.trim(),
-          user.dataValues.clave.trim(),
+          user.clave.trim(),
         );
         if (passwordMatch) {
-          user.dataValues.usuario = user.dataValues.usuario.trim();
-          delete user.dataValues.clave;
-          user.dataValues.tipoUsuario = 'Mediken';
+          user.usuario = user.usuario.trim();
+          delete user.clave;
           return user;
         } else {
           throw new HttpException(
             'Usuario no autorizado. Verifique usuario y contraseña',
             HttpStatus.FORBIDDEN,
           );
-        }
-      } else {
-        user = await this.broker.findOne({
-          where: {
-            usuario: data.usuario,
-          },
-          attributes: {
-            exclude: ['dsvcimg'],
-          },
-        });
-        if (user) {
-          const passwordMatch = await this.comparePasswords(
-            data.clave.trim(),
-            user.dataValues.clave.trim(),
-          );
-          if (passwordMatch) {
-            user.dataValues.usuario = user.dataValues.usuario.trim();
-            delete user.dataValues.clave;
-            user.dataValues.tipoUsuario = 'Broker';
-            return user;
-          } else {
-            throw new HttpException(
-              'Usuario no autorizado. Verifique usuario y contraseña',
-              HttpStatus.FORBIDDEN,
-            );
-          }
-        } else {
-          user = await this.afiliadoTitular.findOne({
-            where: {
-              usuario: data.usuario,
-            },
-            attributes: {
-              exclude: ['Afiimg'],
-            },
-          });
-          if (user) {
-            const passwordMatch = await this.comparePasswords(
-              data.clave.trim(),
-              user.dataValues.clave.trim(),
-            );
-            if (passwordMatch) {
-              delete user.dataValues.clave;
-              user.dataValues.tipoUsuario = 'AfiliadoTitular';
-              const contratos = await this.afiliadoTitular.findAll({
-                where: {
-                  usuario: data.usuario,
-                  suspendido: {
-                    [Op.not]: 'S',
-                  },
-                  statusCliente: {
-                    [Op.not]: 'E',
-                  },
-                },
-                attributes: [['ClRgcnt', 'contrato']],
-              });
-              delete user.dataValues.contrato;
-              user.dataValues.contratos = [];
-              for (let i = 0; i < contratos.length; i++) {
-                const contrato = contratos[i];
-                const benef = await this.beneficiario.findAll({
-                  where: {
-                    contrato: contrato.contrato,
-                    suspendido: {
-                      [Op.not]: 'S',
-                    },
-                    statusExcluido: {
-                      [Op.not]: 'E',
-                    },
-                  },
-                  attributes: [
-                    ['beveIde', 'id'],
-                    ['bevenom', 'nombres'],
-                    ['beveape', 'apellidos'],
-                    ['bevecnt', 'contrato'],
-                    ['bevecntsec', 'secuencialContrato'],
-                    ['bevebensec', 'secuencialBeneficiario'],
-                    ['beveimg', 'img'],
-                  ],
-                });
-                user.dataValues.contratos.push({
-                  contrato: contrato.dataValues.contrato,
-                  beneficiarios: benef,
-                });
-              }
-              return user;
-            } else {
-              throw new HttpException(
-                'Usuario no autorizado. Verifique usuario y contraseña',
-                HttpStatus.FORBIDDEN,
-              );
-            }
-          } else {
-            user = await this.beneficiario.findOne({
-              where: {
-                usuario: data.usuario,
-              },
-              attributes: {
-                exclude: ['beveimg'],
-              },
-            });
-            if (user) {
-              const passwordMatch = await this.comparePasswords(
-                data.clave.trim(),
-                user.dataValues.clave.trim(),
-              );
-              if (passwordMatch) {
-                user.dataValues.usuario = user.dataValues.usuario.trim();
-                delete user.dataValues.clave;
-                user.dataValues.tipoUsuario = 'Beneficiario';
-                return user;
-              } else {
-                throw new HttpException(
-                  'Usuario no autorizado. Verifique usuario y contraseña',
-                  HttpStatus.FORBIDDEN,
-                );
-              }
-            }
-          }
         }
       }
     } catch (error) {
@@ -202,68 +59,6 @@ export class AuthService {
         'Usuario no autorizado. Verifique usuario y contraseña',
         HttpStatus.FORBIDDEN,
       );
-    }
-  }
-
-  async resetPassword(userDto: UserDto): Promise<object> {
-    try {
-      const oAuth2Client = new google.auth.OAuth2(
-        this.configService.get<string>('gmail.clientId'),
-        this.configService.get<string>('gmail.secret'),
-        'https://developers.google.com/oauthplayground',
-      );
-
-      oAuth2Client.setCredentials({
-        refresh_token: this.configService.get<string>('gmail.refreshToken'),
-      });
-
-      const ACCESS_TOKEN: string = await this.obtenerTokenAcceso(oAuth2Client);
-      const config: Options = {
-        service: 'gmail',
-        host: 'smtp.gmail.com',
-        auth: {
-          type: 'OAuth2',
-          user: this.configService.get<string>('gmail.user'),
-          clientId: this.configService.get<string>('gmail.clientId'),
-          clientSecret: this.configService.get<string>('gmail.secret'),
-          refreshToken: this.configService.get<string>('gmail.refreshToken'),
-          accessToken: ACCESS_TOKEN,
-        },
-        tls: {
-          rejectUnauthorized: true,
-        },
-        secure: true,
-      };
-      this.mailerService.addTransporter('gmail', config);
-      await this.mailerService
-        .sendMail({
-          transporterName: 'gmail',
-          to: 'manilex2@gmail.com',
-          subject: 'SOLICITUD DE RESETEO DE CONTRASEÑA',
-          template: 'index',
-          context: {
-            email: userDto.email,
-            urlPwd: this.configService.get<string>('origin_url'),
-          },
-          attachments: [
-            {
-              filename: 'mediken.png',
-              path: `${process.cwd()}/assets/mediken.png`,
-              cid: 'mediken',
-            },
-          ],
-        })
-        .then((success) => {
-          console.log(success);
-        })
-        .catch((err) => {
-          console.error(err);
-          throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
-        });
-      return userDto;
-    } catch (error) {
-      console.log(error);
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 

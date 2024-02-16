@@ -3,10 +3,7 @@ import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { UserDto } from '../users/dto/user/userDTO';
 import {
-  AfiliadoTitular,
-  Beneficiario,
-  Broker,
-  MedikenUser,
+  AmbiensaUser,
 } from 'src/users/models';
 
 @Controller('auth')
@@ -16,22 +13,9 @@ export class AuthController {
   @Post()
   async getUser(@Body() userDto: UserDto) {
     try {
-      const user: Promise<
-        MedikenUser | Beneficiario | Broker | AfiliadoTitular
-      > = this.authService.getUser(userDto);
-      const accessToken = this.authService.login((await user).dataValues);
+      const user: Promise<AmbiensaUser> = this.authService.getUser(userDto);
+      const accessToken = this.authService.login(await user);
       return [await accessToken];
-    } catch (error) {
-      throw new HttpException(error.message, error.status);
-    }
-  }
-
-  @Public()
-  @Post('reset-password')
-  async resetPassword(@Body() userDto: UserDto) {
-    try {
-      const user: Promise<object> = this.authService.resetPassword(userDto);
-      return user;
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

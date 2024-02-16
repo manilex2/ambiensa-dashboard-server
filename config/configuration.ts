@@ -5,21 +5,6 @@ export const configuration = () => ({
   jwt: {
     secret: process.env.JWT_SECRET_KEY,
   },
-  database: {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    pwd: process.env.DB_PASSWORD,
-    db: process.env.DB_DATABASE,
-  },
-  gmail: {
-    user: process.env.GMAIL_USER,
-    pwd: process.env.GMAIL_PASS,
-    clientId: process.env.GMAIL_CLIENT,
-    secret: process.env.GMAIL_SECRET,
-    refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-    accessToken: process.env.GMAIL_ACCESS_TOKEN,
-  },
   msal: {
     clientId: process.env.MSAL_CLIENT_ID,
     authorityUrl: process.env.MSAL_AUTHORITY_URL,
