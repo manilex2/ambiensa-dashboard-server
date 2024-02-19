@@ -8,7 +8,6 @@ export const validationSchema = Joi.object({
     'provision',
   ),
   JWT_SECRET_KEY: Joi.string().required(),
-  PORT: Joi.number().default(5300),
   ORIGIN_URL: Joi.string().required(),
   MSAL_CLIENT_ID: Joi.string().required(),
   MSAL_AUTHORITY_URL: Joi.string().required(),

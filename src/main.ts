@@ -5,13 +5,13 @@ import { json, urlencoded } from 'express';
 import * as cors from 'cors';
 import { join } from 'path';
 
-const port = process.env.PORT;
+const port = process.env.PORT || 5300;
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['error', 'warn', 'log'],
   });
-  app.setGlobalPrefix('dashboard-server');
+  app.setGlobalPrefix('dashboardServer');
   app.use(cors());
   app.set('trust proxy', true);
   app.use(json({ limit: '50mb' }));

@@ -16,7 +16,11 @@ import { JoiPipeModule, JoiSchemaOptions } from 'nestjs-joi';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `${process.cwd()}/config/env/${process.env.NODE_ENV}.env`,
+      envFilePath:
+        process.env.NODE_ENV == 'production' ||
+        process.env.NODE_ENV == 'development'
+          ? `${process.cwd()}/config/env/${process.env.NODE_ENV}.env`
+          : '.env',
       isGlobal: true,
       load: [configuration],
       validationSchema,
