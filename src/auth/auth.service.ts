@@ -5,13 +5,9 @@ import { AmbiensaUser } from 'src/users/models';
 import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
-  constructor(
-    private jwtService: JwtService
-  ) {}
+  constructor(private jwtService: JwtService) {}
 
-  async login(
-    user: AmbiensaUser,
-  ): Promise<object> {
+  async login(user: AmbiensaUser): Promise<object> {
     return {
       token: this.jwtService.sign({
         user: {
@@ -21,16 +17,14 @@ export class AuthService {
     };
   }
 
-  async getUser(
-    data: UserDto,
-  ): Promise<AmbiensaUser> {
+  async getUser(data: UserDto): Promise<AmbiensaUser> {
     let user: AmbiensaUser;
     try {
       user = {
-        clave: "Hola-123",
-        email: "prueba@ambiensa.com",
-        nombres: "Prueba Ambiensa",
-        usuario: "ambiensa"
+        clave: 'Hola-123',
+        email: 'prueba@ambiensa.com',
+        nombres: 'Prueba Ambiensa',
+        usuario: 'ambiensa',
       };
       if (user) {
         const passwordMatch = await this.comparePasswords(

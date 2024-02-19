@@ -2,9 +2,7 @@ import { Controller, Post, Body, HttpException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { UserDto } from '../users/dto/user/userDTO';
-import {
-  AmbiensaUser,
-} from 'src/users/models';
+import { AmbiensaUser } from 'src/users/models';
 
 @Controller('auth')
 export class AuthController {
