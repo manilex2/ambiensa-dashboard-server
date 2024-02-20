@@ -19,7 +19,7 @@ jobs:
         env:
           PRODUCTION_DETAILS: '${{ secrets.PRODUCTION_DETAILS }}'
 
-      - run: npm ci && npm build
+      - run: npm ci && npm run build
       - uses: jxw1102/action-functions-deploy@0.7.1
         with:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_AMBIENSA_9C628 }}"
