@@ -13,8 +13,6 @@ import { MulterModule } from '@nestjs/platform-express';
 import { PowerbiModule } from './powerbi/powerbi.module';
 import { JoiPipeModule, JoiSchemaOptions } from 'nestjs-joi';
 
-console.log(process.cwd());
-
 @Module({
   imports: [
     ConfigModule.forRoot({
