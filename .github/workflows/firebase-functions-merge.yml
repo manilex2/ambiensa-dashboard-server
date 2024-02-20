@@ -19,7 +19,10 @@ jobs:
         env:
           PRODUCTION_DETAILS: '${{ secrets.PRODUCTION_DETAILS }}'
 
-      - uses: chrissank/deploy-firebase-functions@1.1.0
+      - uses: flame-app-studio/firebase-ci-ops@v1.9.0
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_CI_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           TARGET: default
+          DEPLOY_DATABASE: false
+          DEPLOY_STORAGE: false
+          DEPLOY_FIRESTORE_RULES: false
