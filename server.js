@@ -4,7 +4,7 @@ const fs = require('fs');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
 
-const dir = './';
+const dir = './functions';
 const prodFile = '.env'; // For production deployment
 
 const content = `${process.env.PRODUCTION_DETAILS}`;

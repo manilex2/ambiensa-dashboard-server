@@ -13,6 +13,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { PowerbiModule } from './powerbi/powerbi.module';
 import { JoiPipeModule, JoiSchemaOptions } from 'nestjs-joi';
 
+console.log(process.cwd());
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,7 +22,7 @@ import { JoiPipeModule, JoiSchemaOptions } from 'nestjs-joi';
         process.env.NODE_ENV == 'production' ||
         process.env.NODE_ENV == 'development'
           ? `${process.cwd()}/config/env/${process.env.NODE_ENV}.env`
-          : '.env',
+          : `.env`,
       isGlobal: true,
       load: [configuration],
       validationSchema,

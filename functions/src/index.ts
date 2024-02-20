@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { onRequest } from 'firebase-functions/v2/https';
-import { AppModule } from './src/app.module';
+import { AppModule } from './app.module';
 import {
   NestExpressApplication,
   ExpressAdapter,
@@ -38,7 +38,7 @@ const createFunction = async (expressInstance): Promise<void> => {
 };
 export const dashboardServer = onRequest(
   {
-    cors: ['https://ambiensa-9c628.web.app/'],
+    cors: ['https://ambiensa-9c628.web.app'],
   },
   async (request, response) => {
     await createFunction(expressServer);
