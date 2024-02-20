@@ -18,8 +18,7 @@ jobs:
       - run: node server.js
         env:
           PRODUCTION_DETAILS: '${{ secrets.PRODUCTION_DETAILS }}'
-
-      - run: npm ci
+          
       - uses: dheshalj/deploy-firebase-functions@v0.0.4
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

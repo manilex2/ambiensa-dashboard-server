@@ -25,7 +25,7 @@ fs.access(dir, fs.constants.F_OK, (err) => {
   }
   // Now write to prodFile
   try {
-    fs.writeFileSync(dir + prodFile, content);
+    fs.writeFileSync(dir + '/' + prodFile, content);
     console.log('Creado satisfactoriamente en', process.cwd());
     if (fs.existsSync(dir + '/' + prodFile)) {
       console.log('Archivo fue creado', path.resolve(dir + prodFile));
