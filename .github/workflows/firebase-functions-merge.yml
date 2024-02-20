@@ -19,10 +19,8 @@ jobs:
         env:
           PRODUCTION_DETAILS: '${{ secrets.PRODUCTION_DETAILS }}'
 
-      - uses: flame-app-studio/firebase-ci-ops@v1.9.0
+      - uses: amar-sharma/deploy-firebase-github-ci@latest
         env:
-          FIREBASE_CI_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          TARGET: default
-          DEPLOY_DATABASE: false
-          DEPLOY_STORAGE: false
-          DEPLOY_FIRESTORE_RULES: false
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_PROJECT: 'Yambiensa-9c628'
+          FIREBASE_OPTIONS: '--only functions'
