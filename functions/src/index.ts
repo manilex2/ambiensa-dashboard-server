@@ -38,7 +38,7 @@ const createFunction = async (expressInstance): Promise<void> => {
 };
 export const dashboardServer = onRequest(
   {
-    cors: ['https://ambiensa-9c628.web.app'],
+    cors: [`${process.env.ORIGIN_URL}`],
   },
   async (request, response) => {
     await createFunction(expressServer);
