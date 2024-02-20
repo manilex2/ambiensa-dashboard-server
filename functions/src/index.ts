@@ -1,3 +1,4 @@
+import * as dotenv from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { onRequest } from 'firebase-functions/v2/https';
 import { AppModule } from './app.module';
@@ -9,6 +10,7 @@ import * as express from 'express';
 import { join } from 'path';
 import { setGlobalOptions } from 'firebase-functions/v2';
 import * as admin from 'firebase-admin';
+dotenv.config();
 
 const expressServer = express();
 
