@@ -19,6 +19,7 @@ jobs:
         env:
           PRODUCTION_DETAILS: '${{ secrets.PRODUCTION_DETAILS }}'
 
+      - uses: actions/checkout@v4
       - uses: dheshalj/deploy-firebase-functions@v0.0.4
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
