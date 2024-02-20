@@ -18,7 +18,8 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - run: cp config/env/production.env > .env
 
       - name: Deploy to Firebase
         uses: sws2apps/firebase-deployment@main #consider using pin for dependabot auto update
