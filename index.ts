@@ -6,7 +6,6 @@ import {
   ExpressAdapter,
 } from '@nestjs/platform-express';
 import * as express from 'express';
-import * as cors from 'cors';
 import { join } from 'path';
 import { setGlobalOptions } from 'firebase-functions/v2';
 import * as admin from 'firebase-admin';
@@ -28,7 +27,7 @@ const createFunction = async (expressInstance): Promise<void> => {
       logger: ['error', 'warn', 'log'],
     },
   );
-  app.use(cors());
+  app.enableCors();
   app.set('trust proxy', true);
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
